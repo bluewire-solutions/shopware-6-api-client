@@ -1,0 +1,33 @@
+{
+  "name": "shopware-6-api-client",
+  "version": "1.0.0",
+  "description": "Shopware 6 API client which pulls OpenAPI spec from the API server and provides its endpoints",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bluewire-solutions/shopware-6-api-client.git"
+  },
+  "keywords": [
+    "shopware",
+    "node",
+    "api",
+    "client",
+    "openapi"
+  ],
+  "author": "bluewire.solutions GmbH & Co. KG, Tobias Hocke",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bluewire-solutions/shopware-6-api-client/issues"
+  },
+  "homepage": "https://github.com/bluewire-solutions/shopware-6-api-client#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "openapi-client-axios": "^3.7.8"
+  },
+  "devDependencies": {
+    "standard": "^16.0.3"
+  }
+}
