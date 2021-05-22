@@ -6,6 +6,7 @@
 
 const axios = require('axios').default
 const OpenAPIClientAxios = require('openapi-client-axios').default
+const fs = require('fs')
 
 class Shopware {
   constructor (config) {
@@ -45,10 +46,71 @@ class Shopware {
   }
 
   async getClient () {
+    let apiDefinition = this.baseURL + 'api/v3/_info/openapi3.json'
+    try {
+      await this.axios.get(apiDefinition)
+    } catch (error) {
+      if (error.response.status === 404) {
+        apiDefinition = this.baseURL + 'api/_info/openapi3.json' // fallback for >=6.4.0.0
+      } else {
+        if (this.strict) {
+          // in strict-mode, fail hard and re-throw the error
+          throw error
+        } else {
+          // just emit a warning about the errors
+          console.warn(error)
+        }
+      }
+    }
+
+    // pre sanitize api
+    try {
+      const response = await this.axios.get(apiDefinition)
+      const spec = response.data
+
+      /*
+       * hotfix for https://github.com/bluewire-solutions/shopware-6-api-client/issues/3
+       * caused by https://issues.shopware.com/issues/NEXT-15412
+       */
+      spec.components.schemas.relationshipLinks = {
+        description: "A resource object **MAY** contain references to other resource objects (\"relationships\"). Relationships may be to-one or to-many. Relationships can be specified by including a member in a resource's links object.",
+        properties: {
+          self: {
+            allOf: [
+              {
+                description: 'A `self` member, whose value is a URL for the relationship itself (a "relationship URL"). This URL allows the client to directly manipulate the relationship. For example, it would allow a client to remove an `author` from an `article` without deleting the people resource itself.',
+                type: 'array'
+              },
+              {
+                $ref: '#/components/schemas/link'
+              }
+            ]
+          },
+          related: {
+            $ref: '#/components/schemas/link'
+          }
+        },
+        type: 'object',
+        additionalProperties: true
+      }
+
+      const data = JSON.stringify(spec)
+      fs.writeFileSync('./openapi3.json', data)
+    } catch (error) {
+      if (this.strict) {
+        // in strict-mode, fail hard and re-throw the error
+        throw error
+      } else {
+        // just emit a warning about the errors
+        console.warn(error)
+      }
+    }
+    //
+
     this.api = new OpenAPIClientAxios({
-      definition: this.baseURL + 'api/v3/_info/openapi3.json',
+      definition: './openapi3.json',
       axiosConfigDefaults: {
-        baseURL: this.baseURL = 'https://sw6.bwskun.de/api/v3',
+        // baseURL: this.baseURL,
         headers: {
           Authorization: this.access_token
         }
