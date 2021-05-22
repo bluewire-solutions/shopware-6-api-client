@@ -48,7 +48,7 @@ class Shopware {
     this.api = new OpenAPIClientAxios({
       definition: this.baseURL + 'api/v3/_info/openapi3.json',
       axiosConfigDefaults: {
-        baseURL: this.baseURL = 'https://sw6.bwskun.de/api/v3',
+        baseURL: this.baseURL,
         headers: {
           Authorization: this.access_token
         }
