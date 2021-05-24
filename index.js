@@ -7,6 +7,7 @@
 const axios = require('axios').default
 const OpenAPIClientAxios = require('openapi-client-axios').default
 const fs = require('fs')
+const { v4: uuidv4 } = require('uuid')
 
 class Shopware {
   constructor (config) {
@@ -139,6 +140,11 @@ class Shopware {
       }
     }
     return this.client
+  }
+
+  getShopwareUUID () {
+    const id = uuidv4()
+    return id.split('-').join('')
   }
 }
 
