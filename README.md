@@ -40,7 +40,7 @@ const shopware = new Shopware({
 ## Functional Description
 The Shopware 6 API exposes an OpenAPI specification under 
 ```
-/api/v3/_info/openapi3.json
+/api/_info/openapi3.json
 ```
 Find further details here https://docs.shopware.com/en/shopware-platform-dev-en/admin-api-guide
 
